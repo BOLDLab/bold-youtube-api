@@ -27,18 +27,33 @@ var TOKEN_PATH = TOKEN_DIR + 'youtube-nodejs-quickstart.json';
 let connection = {};
 
 function loadAuth(fn, req, res) {
-res.header("Access-Control-Allow-Origin", "*");
-let args = arguments;
-fs.readFile('client_secret.json', function processClientSecrets(err, content) {
-  if (err) {
-    debug('Error loading client secret file: ' + err);
-    return;
-  }
+if(!res.headersSent) {
+      res.header("Access-Control-Allow-Origin", "*");
+}
+const args = arguments;
+if(! process.env.GOOGLE_CREDENTIALS) {
+      fs.readFile('client_secret.json', function processClientSecrets(err, content) {
+        if (err) {
+          debug('Error loading client secret file: ' + err);
+          return;
+        }
 
-  connection = {req: req, res: res};
-  // Authorize a client with the loaded credentials, then call the YouTube API.
-  authorize(JSON.parse(content), fn, args);
-});
+        connection = {req: req, res: res};
+        // Authorize a client with the loaded credentials, then call the YouTube API.
+        authorize(JSON.parse(content), fn, args);
+      });
+} else {
+        connection = {req: req, res: res};
+
+        const content = process.env.GOOGLE_CREDENTIALS;
+
+        if(typeof content !== 'undefined') {
+            authorize(JSON.parse(content, fn, args));
+        } else {
+            debug("Google credentials not found");
+            return;
+        }
+}
 }
 
 /**
@@ -56,14 +71,18 @@ function authorize(credentials, callback) {
   var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
   let args = arguments[2];
   // Check if we have previously stored a token.
-  fs.readFile(TOKEN_PATH, function(err, token) {
-    if (err) {
-      getNewToken(oauth2Client, callback, args);
-    } else {
-      oauth2Client.credentials = JSON.parse(token);
-      callback(oauth2Client, args);
-    }
-  });
+  if(process.env.NODE_DEV) {
+            fs.readFile(TOKEN_PATH, function(err, token) {
+            if (err) {
+              getNewToken(oauth2Client, callback, args);
+            } else {
+              oauth2Client.credentials = JSON.parse(token);
+              callback(oauth2Client, args);
+            }
+      });
+  } else {
+      oauth2Client.credentials = config.credentials();
+  }
 }
 
 /**
