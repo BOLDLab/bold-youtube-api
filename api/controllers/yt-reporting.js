@@ -381,6 +381,11 @@ function createReport(auth) {
                         });
 }
 
+module.exports.verify =function(req, res) {
+    res.set('Content-Type', 'text/plain');
+    res.send(new Buffer('google-site-verification: google79db606f71f9941f.html'));
+};
+
 module.exports.playlist_items = function(req,res) {
     loadAuth(getChannel, req, res, 'playlistItems');
 };

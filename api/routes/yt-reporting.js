@@ -23,4 +23,7 @@ module.exports = function(app) {
  app.route('/video-details').
       get(controller.video_details);
 
+  app.route('/google79db606f71f9941f.html').
+      get(controller.verify);
+
 };
