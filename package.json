@@ -4,7 +4,8 @@
   "description": "BOLD Youtube API",
   "repository": "https://github.com/BOLDLab/bold-youtube-api",
   "engines": {
-    "node": "6.2.2"
+    "node": "6.2.2",
+    "npm": "5.3.0"
   },
   "private": true,
   "main": "server.js",
