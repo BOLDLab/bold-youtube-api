@@ -1,0 +1,31 @@
+{
+  "name": "bold-youtube-api",
+  "version": "1.0.0",
+  "description": "BOLD Youtube API",
+  "main": "server.js",
+  "dependencies": {
+    "babel": "^6.23.0",
+    "compression": "^1.7.0",
+    "debug": "^3.0.1",
+    "express": "^4.15.4",
+    "google-auth-library": "^0.10.0",
+    "googleapis": "^21.3.0",
+    "helmet": "^3.8.1",
+    "nodemon": "^1.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  },
+  "scripts": {
+    "test": "test-server.js",
+    "start": "nodemon server.js"
+  },
+  "keywords": [
+    "Youtube",
+    "API",
+    "server",
+    "BOLD"
+  ],
+  "author": "Paul Sijpkes",
+  "license": "GPL-3.0"
+}
