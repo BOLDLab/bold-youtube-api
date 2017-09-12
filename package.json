@@ -6,10 +6,11 @@
   "engines": {
     "node": "6.2.2"
   },
-  "private":true,
+  "private": true,
   "main": "server.js",
   "dependencies": {
     "babel": "^6.23.0",
+    "body-parser": "^1.18.0",
     "compression": "^1.7.0",
     "debug": "^3.0.1",
     "express": "^4.15.4",
