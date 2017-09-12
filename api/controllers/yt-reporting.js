@@ -73,7 +73,7 @@ function authorize(credentials, callback) {
   var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
   let args = arguments[2];
   // Check if we have previously stored a token.
-  if(process.env.NODE_DEV) {
+  //if(process.env.NODE_DEV) {
             fs.readFile(TOKEN_PATH, function(err, token) {
             if (err) {
               getNewToken(oauth2Client, callback, args);
@@ -82,9 +82,9 @@ function authorize(credentials, callback) {
               callback(oauth2Client, args);
             }
       });
-  } else {
-      oauth2Client.credentials = config.token();
-  }
+//  } else {
+  //    oauth2Client.credentials = config.credentials();
+  //}
 }
 
 /**
