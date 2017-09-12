@@ -47,9 +47,9 @@ if(! process.env.GOOGLE_CREDENTIALS) {
         connection = {req: req, res: res};
 
         const content = process.env.GOOGLE_CREDENTIALS;
-
+      //  console.log(content);
         if(typeof content !== 'undefined') {
-            authorize(JSON.parse(content, fn, args));
+            authorize(content, fn, args);
         } else {
             debug("Google credentials not found");
             return;
@@ -391,7 +391,7 @@ module.exports.playlists = function(req,res) {
 module.exports.video_details = function(req, res) {
 
    loadAuth(getVideoDetails, req, res, req.query.v);
-}
+};
 
 module.exports.video_analytics = function(req,res) {
     loadAuth(getVideoAnalytics, req, res, req.query.c, req.query.v, req.query.s, req.query.e);
