@@ -1,10 +1,9 @@
 const config = {
+      tokenPath: () => {
+        return (process.env.HOME || process.env.HOMEPATH ||
+            process.env.USERPROFILE) + '.credentials/';
+      },
       credentials: () => {
-          if(process.env.NODE_DEV) {
-              return (process.env.HOME || process.env.HOMEPATH ||
-                  process.env.USERPROFILE) + '/.credentials/';
-          } else {
-              return JSON.parse(process.env.CREDENTIALS);
-          }
+          return JSON.parse(process.env.GOOGLE_CREDENTIALS);
       }
 };

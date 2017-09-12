@@ -4,6 +4,8 @@ const google = require('googleapis');
 const googleAuth = require('google-auth-library');
 const debug =require('debug')('google_apis');
 
+const config = require('config');
+
 Date.prototype.yt_friendly = function() {
   var mm = this.getMonth() + 1; // getMonth() is zero-based
   var dd = this.getDate();
@@ -19,8 +21,7 @@ var SCOPES = ['https://www.googleapis.com/auth/youtube',
 'https://www.googleapis.com/auth/yt-analytics.readonly',
 'https://www.googleapis.com/auth/yt-analytics-monetary.readonly',
 'https://www.googleapis.com/auth/youtubepartner'];
-var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
-    process.env.USERPROFILE) + '/.credentials/';
+var TOKEN_DIR = config.tokenDir();
 var TOKEN_PATH = TOKEN_DIR + 'youtube-nodejs-quickstart.json';
 
 // Load client secrets from a local file.
@@ -81,7 +82,7 @@ function authorize(credentials, callback) {
             }
       });
   } else {
-      oauth2Client.credentials = config.credentials();
+      oauth2Client.credentials = config.token();
   }
 }
 
