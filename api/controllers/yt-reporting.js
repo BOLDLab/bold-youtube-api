@@ -47,7 +47,7 @@ if(! process.env.GOOGLE_CREDENTIALS) {
         connection = {req: req, res: res};
 
         const content = process.env.GOOGLE_CREDENTIALS;
-      //  console.log(content);
+        console.log(content);
         if(typeof content !== 'undefined') {
             authorize(content, fn, args);
         } else {
