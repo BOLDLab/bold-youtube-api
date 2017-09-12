@@ -46,9 +46,10 @@ if(! process.env.GOOGLE_CREDENTIALS) {
 } else {
         connection = {req: req, res: res};
 
-        const content = process.env.GOOGLE_CREDENTIALS;
-        console.log(content);
+        let content = process.env.GOOGLE_CREDENTIALS;
+
         if(typeof content !== 'undefined') {
+            content = JSON.parse(content);
             authorize(content, fn, args);
         } else {
             debug("Google credentials not found");
