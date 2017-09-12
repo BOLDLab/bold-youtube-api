@@ -4,7 +4,7 @@ const google = require('googleapis');
 const googleAuth = require('google-auth-library');
 const debug =require('debug')('google_apis');
 
-const config = require('config');
+const config = require('../../config');
 
 Date.prototype.yt_friendly = function() {
   var mm = this.getMonth() + 1; // getMonth() is zero-based
@@ -35,7 +35,7 @@ const args = arguments;
 if(! process.env.GOOGLE_CREDENTIALS) {
       fs.readFile('client_secret.json', function processClientSecrets(err, content) {
         if (err) {
-          debug('Error loading client secret file: ' + err);
+          console.log('Error loading client secret file: ' + err);
           return;
         }
 
@@ -100,7 +100,7 @@ function getNewToken(oauth2Client, callback) {
     access_type: 'offline',
     scope: SCOPES
   });
-  debug('Authorize this app by visiting this url: ', authUrl);
+  console.log('Authorize this app by visiting this url: ', authUrl);
   var rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
