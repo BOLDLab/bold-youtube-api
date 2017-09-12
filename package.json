@@ -2,6 +2,10 @@
   "name": "bold-youtube-api",
   "version": "1.0.0",
   "description": "BOLD Youtube API",
+  "repository": "https://github.com/BOLDLab/bold-youtube-api",
+  "engines": {
+    "node": "6.2.2"
+  },
   "main": "server.js",
   "dependencies": {
     "babel": "^6.23.0",
@@ -10,8 +14,7 @@
     "express": "^4.15.4",
     "google-auth-library": "^0.10.0",
     "googleapis": "^21.3.0",
-    "helmet": "^3.8.1",
-    "nodemon": "^1.11.0"
+    "helmet": "^3.8.1"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
