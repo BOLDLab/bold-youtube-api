@@ -33,7 +33,7 @@ if(!res.headersSent) {
 }
 
 let service = process.env.GOOGLE_SERVICE_PEM;
-console.log(service);
+//console.log(service);
 const args = arguments;
 //console.log(service);
 if(!service) {
