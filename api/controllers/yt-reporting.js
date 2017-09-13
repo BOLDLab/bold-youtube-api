@@ -305,7 +305,7 @@ function getVideoAnalytics(auth, args) {
   date = end_d ? new Date(end_d) : new Date();
   const end = date.yt_friendly();
 
-  debug(args);
+  debug(JSON.stringify(args));
   debug(start+ " ==> "+end);
 
   service.reports.query({
