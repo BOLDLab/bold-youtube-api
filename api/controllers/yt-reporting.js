@@ -418,7 +418,7 @@ module.exports.video_details = function(req, res) {
 };
 
 module.exports.video_analytics = function(req,res) {
-    loadAuth(getVideoAnalytics, req, res, req.query.c, req.query.v, req.query.s, req.query.e);
+    loadAuth(getVideoAnalytics, req, res, req.query.c, req.query.v, req.query.t, req.query.e);
 };
 
 module.exports.list_all_channels = function(req, res) {
