@@ -47,7 +47,7 @@ if(service) {
           if(! process.env.GOOGLE_CREDENTIALS) {
                 fs.readFile('client_secret.json', function processClientSecrets(err, content) {
                   if (err) {
-                    console.log('Error loading client secret file: ' + err);
+                    debug('Error loading client secret file: ' + err);
                     return;
                   }
 
