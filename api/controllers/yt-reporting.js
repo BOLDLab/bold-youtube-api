@@ -32,12 +32,12 @@ if(!res.headersSent) {
       res.header("Access-Control-Allow-Origin", "*");
 }
 
-let service = process.env.GOOGLE_SERVICE_PEM;
-//console.log(service);
+let service = process.env.GOOGLE_SERVICE_PEM ? new Buffer(process.env.GOOGLE_SERVICE_PEM) : fs.readFileSync('google_service.pem');
+
 const args = arguments;
-//console.log(service);
-if(!service) {
-        service = fs.readFileSync('google_service.pem');
+
+if(service) {
+        service =
 
         account.auth( service, {
             iss : 'bold-111@uon-bold-video-analytics.iam.gserviceaccount.com',
