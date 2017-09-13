@@ -41,7 +41,7 @@ if(service) {
 
         account.auth( service, {
             iss : 'bold-111@uon-bold-video-analytics.iam.gserviceaccount.com',
-            scope : 'https://www.googleapis.com/auth/yt-analytics.readonly',
+            scope : 'https://www.googleapis.com/auth/yt-analytics',
             onBehalfOfContentOwner: 'theBOLDlab'
         }, function ( err, accessToken ) {
           if(! process.env.GOOGLE_CREDENTIALS) {
