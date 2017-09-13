@@ -298,8 +298,6 @@ function getVideoAnalytics(auth, args) {
   const end_d = !args[6]?null:args[6];
 
   let outcome = {};
-
-
   let date = start_d ? new Date(start_d) : new Date();
 
   const start = date.yt_friendly();
@@ -307,6 +305,7 @@ function getVideoAnalytics(auth, args) {
   date = end_d ? new Date(end_d) : new Date();
   const end = date.yt_friendly();
 
+  debug(args);
   debug(start+ " ==> "+end);
 
   service.reports.query({
