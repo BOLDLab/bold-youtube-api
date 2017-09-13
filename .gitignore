@@ -9,6 +9,7 @@
 *.vi
 *~
 *.sass-cache
+.env
 
 # OS or Editor folders
 .DS_Store
@@ -22,6 +23,8 @@ Thumbs.db
 # credentials
 .credentials/
 client_secret.json
+service_secret.json
+google_service.pem
 
 # NPM packages folder.
 node_modules/

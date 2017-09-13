@@ -3,7 +3,7 @@ const readline = require('readline');
 const google = require('googleapis');
 const googleAuth = require('google-auth-library');
 const debug =require('debug')('google_apis');
-
+const account = require('google-auth2-service-account');
 const config = require('../../config');
 
 Date.prototype.yt_friendly = function() {
@@ -31,31 +31,53 @@ function loadAuth(fn, req, res) {
 if(!res.headersSent) {
       res.header("Access-Control-Allow-Origin", "*");
 }
+
+let service = process.env.GOOGLE_SERVICE_PEM;
 const args = arguments;
-if(! process.env.GOOGLE_CREDENTIALS) {
-      fs.readFile('client_secret.json', function processClientSecrets(err, content) {
-        if (err) {
-          console.log('Error loading client secret file: ' + err);
-          return;
-        }
+//console.log(service);
+if(!service) {
+        service = fs.readFileSync('google_service.pem');
 
-        connection = {req: req, res: res};
-        // Authorize a client with the loaded credentials, then call the YouTube API.
-        authorize(JSON.parse(content), fn, args);
-      });
+        account.auth( service, {
+            iss : 'bold-111@uon-bold-video-analytics.iam.gserviceaccount.com',
+            scope : 'https://www.googleapis.com/auth/yt-analytics.readonly',
+            onBehalfOfContentOwner: 'theBOLDlab'
+        }, function ( err, accessToken ) {
+          if(! process.env.GOOGLE_CREDENTIALS) {
+                fs.readFile('client_secret.json', function processClientSecrets(err, content) {
+                  if (err) {
+                    console.log('Error loading client secret file: ' + err);
+                    return;
+                  }
+
+                  connection = {req: req, res: res};
+                  // Authorize a client with the loaded credentials, then call the YouTube API.
+                  authorize(JSON.parse(content), accessToken, fn, args);
+                });
+          } else {
+                  connection = {req: req, res: res};
+
+                  let content = process.env.GOOGLE_CREDENTIALS;
+
+                  if(typeof content !== 'undefined') {
+                      content = JSON.parse(content);
+                      authorize(content, accessToken, fn, args);
+                  } else {
+                      debug("Google credentials not found");
+                      return;
+                  }
+          }
+            //authorize(accessToken, fn, args);
+        });
+    //  });
 } else {
-        connection = {req: req, res: res};
-
-        let content = process.env.GOOGLE_CREDENTIALS;
-
-        if(typeof content !== 'undefined') {
-            content = JSON.parse(content);
-            authorize(content, fn, args);
-        } else {
-            debug("Google credentials not found");
-            return;
-        }
+   debug("Service not authorised");
 }
+
+
+
+/*
+*/
 }
 
 /**
@@ -65,26 +87,17 @@ if(! process.env.GOOGLE_CREDENTIALS) {
  * @param {Object} credentials The authorization client credentials.
  * @param {function} callback The callback to call with the authorized client.
  */
-function authorize(credentials, callback) {
-  var clientSecret = credentials.installed.client_secret;
-  var clientId = credentials.installed.client_id;
-  var redirectUrl = credentials.installed.redirect_uris[0];
-  var auth = new googleAuth();
-  var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
-  let args = arguments[2];
-  // Check if we have previously stored a token.
-  //if(process.env.NODE_DEV) {
-            fs.readFile(TOKEN_PATH, function(err, token) {
-            if (err) {
-              getNewToken(oauth2Client, callback, args);
-            } else {
-              oauth2Client.credentials = JSON.parse(token);
-              callback(oauth2Client, args);
-            }
-      });
-//  } else {
-  //    oauth2Client.credentials = config.credentials();
-  //}
+function authorize(credentials, access_token, callback) {
+        var clientSecret = credentials.installed.client_secret;
+        var clientId = credentials.installed.client_id;
+        var redirectUrl = credentials.installed.redirect_uris[0];
+
+        const auth = new googleAuth();
+        const oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
+        const args = arguments[2];
+
+        oauth2Client.setCredentials({access_token: access_token});
+        callback(oauth2Client, args);
 }
 
 /**
@@ -95,6 +108,9 @@ function authorize(credentials, callback) {
  * @param {getEventsCallback} callback The callback to call with the authorized
  *     client.
  */
+
+
+
 function getNewToken(oauth2Client, callback) {
   let args = arguments[2];
   var authUrl = oauth2Client.generateAuthUrl({
