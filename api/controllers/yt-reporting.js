@@ -95,7 +95,7 @@ function authorize(credentials, access_token, callback) {
 
         const auth = new googleAuth();
         const oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
-        const args = arguments[2];
+        const args = arguments[3];
 
         oauth2Client.setCredentials({access_token: access_token});
         callback(oauth2Client, args);
