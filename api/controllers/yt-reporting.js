@@ -304,13 +304,13 @@ function getVideoDetails(auth, args) {
 
 function getVideoAnalytics(auth, args) {
   const service = google.youtubeAnalytics('v1');
-  const channelId = args[3];
-  const videoId = args[4];
-  const start_d = !args[5]?null:args[5];
-  const end_d = !args[6]?null:args[6];
-  debug("c: "+args[3]);
-    debug("v: "+args[4]);
-    debug("s: "+args[5]);
+  const channelId = args[2];
+  const videoId = args[3];
+  const start_d = !args[4]?null:args[4];
+  const end_d = !args[5]?null:args[5];
+  debug("c: "+args[2]);
+    debug("v: "+args[3]);
+    debug("s: "+args[4]);
   let outcome = {};
   let date = start_d ? new Date(start_d) : new Date();
 
