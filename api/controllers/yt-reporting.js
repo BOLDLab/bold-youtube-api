@@ -32,18 +32,18 @@ if(!res.headersSent) {
       res.header("Access-Control-Allow-Origin", "*");
 }
 
-let service = process.env.GOOGLE_SERVICE_PEM ? new Buffer(process.env.GOOGLE_SERVICE_PEM) : fs.readFileSync('google_service.pem');
+//let service_pem = process.env.GOOGLE_SERVICE_PEM ? new Buffer(process.env.GOOGLE_SERVICE_PEM) : fs.readFileSync('google_service.pem');
 
 const args = arguments;
 
-if(service) {
-        service =
+//let service_account;
+//if(service_pem) {
+  /*      service_account =
 
-        account.auth( service, {
+        account.auth( service_pem, {
             iss : 'bold-111@uon-bold-video-analytics.iam.gserviceaccount.com',
-            scope : 'https://www.googleapis.com/auth/yt-analytics',
-            onBehalfOfContentOwner: 'theBOLDlab'
-        }, function ( err, accessToken ) {
+            scope : 'https://www.googleapis.com/auth/yt-analytics.readonly'
+        }, function ( err, accessToken ) {*/
           if(! process.env.GOOGLE_CREDENTIALS) {
                 fs.readFile('client_secret.json', function processClientSecrets(err, content) {
                   if (err) {
@@ -53,7 +53,7 @@ if(service) {
 
                   connection = {req: req, res: res};
                   // Authorize a client with the loaded credentials, then call the YouTube API.
-                  authorize(JSON.parse(content), accessToken, fn, args);
+                  authorize(JSON.parse(content), fn, args);
                 });
           } else {
                   connection = {req: req, res: res};
@@ -62,18 +62,18 @@ if(service) {
 
                   if(typeof content !== 'undefined') {
                       content = JSON.parse(content);
-                      authorize(content, accessToken, fn, args);
+                      authorize(content, fn, args);
                   } else {
                       debug("Google credentials not found");
                       return;
                   }
           }
             //authorize(accessToken, fn, args);
-        });
+    //    });
     //  });
-} else {
-   debug("Service not authorised");
-}
+/*} else {
+   debug("Service Account not authorised");
+}*/
 
 
 
@@ -88,17 +88,26 @@ if(service) {
  * @param {Object} credentials The authorization client credentials.
  * @param {function} callback The callback to call with the authorized client.
  */
-function authorize(credentials, access_token, callback) {
+function authorize(credentials, callback) {
         var clientSecret = credentials.installed.client_secret;
         var clientId = credentials.installed.client_id;
         var redirectUrl = credentials.installed.redirect_uris[0];
 
         const auth = new googleAuth();
         const oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
-        const args = arguments[3];
+        const args = arguments[2];
 
-        oauth2Client.setCredentials({access_token: access_token});
-        callback(oauth2Client, args);
+        oauth2Client.refreshAccessToken(function(err, tokens) {
+            if(!tokens) {
+                getNewToken(oauth2Client, callback);
+            } else {
+          // your access_token is now refreshed and stored in oauth2Client
+          // store these new tokens in a safe place (e.g. database)
+                storeToken(tokens);
+            }
+          //  callback(oauth2Client, args);
+          });
+
 }
 
 /**
@@ -131,7 +140,7 @@ function getNewToken(oauth2Client, callback) {
         return;
       }
       oauth2Client.credentials = token;
-      storeToken(token);
+
       callback(oauth2Client, args);
     });
   });
@@ -151,7 +160,6 @@ function storeToken(token) {
     }
   }
   fs.writeFile(TOKEN_PATH, JSON.stringify(token));
-  //debug('Token stored to ' + TOKEN_PATH);
 }
 
 /**
@@ -307,9 +315,12 @@ function getVideoAnalytics(auth, args) {
   date = end_d ? new Date(end_d) : new Date();
   const end = date.yt_friendly();
 
-  //debug(JSON.stringify(args));
+  debug(auth);
   debug(start+ " ==> "+end);
-
+  debug(channelId);
+  debug(start);
+  debug(end);
+  debug(videoId);
   service.reports.query({
     auth: auth,
     ids: 'channel=='+channelId,
