@@ -10,6 +10,7 @@
 *~
 *.sass-cache
 .env
+.openode
 
 # OS or Editor folders
 .DS_Store

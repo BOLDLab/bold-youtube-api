@@ -5,6 +5,7 @@ const googleAuth = require('google-auth-library');
 const debug =require('debug')('google_apis');
 const account = require('google-auth2-service-account');
 const config = require('../../config');
+let ucode = "empty";
 
 Date.prototype.yt_friendly = function() {
   var mm = this.getMonth() + 1; // getMonth() is zero-based
@@ -119,7 +120,13 @@ function authorize(credentials, callback) {
  *     client.
  */
 
-
+function setIdentityCode(callback) {
+    setInterval(function() {
+        if(ucode !== "empty") {
+            callback(ucode);
+        }
+    }, 100);
+}
 
 function getNewToken(oauth2Client, callback) {
   let args = arguments[2];
@@ -128,23 +135,20 @@ function getNewToken(oauth2Client, callback) {
     scope: SCOPES
   });
   console.log('Authorize this app by visiting this url: ', authUrl);
-  var rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-  rl.question('Enter the code from that page here: ', function(code) {
-    rl.close();
-    oauth2Client.getToken(code, function(err, token) {
-      if (err) {
-        debug('Error while trying to retrieve access token', err);
-        return;
-      }
-      oauth2Client.credentials = token;
 
-      callback(oauth2Client, args);
-    });
-  });
-}
+    setIdentityCode(function(code) {
+            oauth2Client.getToken(code, function(err, token) {
+              if (err) {
+                debug('Error while trying to retrieve access token', err);
+                return;
+              }
+              oauth2Client.credentials = token;
+
+              callback(oauth2Client, args);
+            });
+      });
+
+  }
 
 /**
  * Store token to disk be used in later program executions.
@@ -414,6 +418,10 @@ module.exports.verify =function(req, res) {
     res.set('Content-Type', 'text/plain');
     res.send(new Buffer('google-site-verification: google79db606f71f9941f.html'));
 };
+
+module.exports.one_off_auth=(function(req, res) {
+      ucode = req.query.code;
+})
 
 module.exports.playlist_items = function(req,res) {
     loadAuth(getChannel, req, res, 'playlistItems');

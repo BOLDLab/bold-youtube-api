@@ -26,4 +26,7 @@ module.exports = function(app) {
   app.route('/google79db606f71f9941f.html').
       get(controller.verify);
 
+  app.route('/one-off-auth').
+        get(controller.one_off_auth);
+
 };
