@@ -136,9 +136,6 @@ function getNewToken(oauth2Client, args) {
     access_type: 'offline',
     scope: SCOPES
   });
-  connection.res.set('Content-Type', 'text/html');
-  connection.res.send(new Buffer('<p>Authorize this app by visiting this url: <br/> <textarea readonly rows=10 columns=10>' + authUrl+ "</textarea></p>"+
-  " <form action='/one-off-auth' type='post'><input type='text' name='code' size='12'> <input type='submit'></form>"));
 
     setIdentityCode(function(code) {
             oauth2Client.getToken(code, function(err, token) {
@@ -148,10 +145,13 @@ function getNewToken(oauth2Client, args) {
               }
               oauth2Client.credentials = token;
               storeToken(token);
-              //callback(oauth2Client, args);
+                //callback(oauth2Client, args);
             });
       });
 
+    connection.res.set('Content-Type', 'text/html');
+    connection.res.send(new Buffer("<p>Authorize this app by visiting this url: <br/> <a href='"+authUrl+"' target='_blank'>" + authUrl+ "</a></p>"+
+      "<form action='/one-off-auth'><input type='text' name='code' size='12'> <input type='submit'></form>"));
   }
 
 /**
