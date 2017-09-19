@@ -97,18 +97,17 @@ function authorize(credentials, callback) {
         const auth = new googleAuth();
         const oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
         const args = arguments[2];
+        //  console.log(TOKEN_PATH);
+        fs.readFile(TOKEN_PATH, function(err, token) {
 
-        oauth2Client.refreshAccessToken(function(err, tokens) {
-            if(!tokens) {
-                getNewToken(oauth2Client, callback);
-            } else {
-          // your access_token is now refreshed and stored in oauth2Client
-          // store these new tokens in a safe place (e.g. database)
-                storeToken(tokens);
-            }
-          //  callback(oauth2Client, args);
-          });
-
+         if (err) {
+              getNewToken(oauth2Client, callback);
+         } else {
+           //console.log(token);
+              oauth2Client.credentials = JSON.parse(token);
+              callback(oauth2Client, args);
+         }
+       });
 }
 
 /**
@@ -121,20 +120,25 @@ function authorize(credentials, callback) {
  */
 
 function setIdentityCode(callback) {
-    setInterval(function() {
+    console.log("waiting for input");
+    const google_code_check = setInterval(function() {
         if(ucode !== "empty") {
+            console.log("Setting: "+ucode);
             callback(ucode);
+            clearInterval(google_code_check);
         }
     }, 100);
 }
 
-function getNewToken(oauth2Client, callback) {
-  let args = arguments[2];
+function getNewToken(oauth2Client, args) {
+  //let args = arguments[2];
   var authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: SCOPES
   });
-  console.log('Authorize this app by visiting this url: ', authUrl);
+  connection.res.set('Content-Type', 'text/html');
+  connection.res.send(new Buffer('<p>Authorize this app by visiting this url: <br/> <textarea readonly rows=10 columns=10>' + authUrl+ "</textarea></p>"+
+  " <form action='/one-off-auth' type='post'><input type='text' name='code' size='12'> <input type='submit'></form>"));
 
     setIdentityCode(function(code) {
             oauth2Client.getToken(code, function(err, token) {
@@ -143,8 +147,8 @@ function getNewToken(oauth2Client, callback) {
                 return;
               }
               oauth2Client.credentials = token;
-
-              callback(oauth2Client, args);
+              storeToken(token);
+              //callback(oauth2Client, args);
             });
       });
 
@@ -303,14 +307,19 @@ function getVideoDetails(auth, args) {
 }
 
 function getVideoAnalytics(auth, args) {
+  if(typeof args === 'undefined') {
+      debug("analytics args were undefined");
+      return;
+  }
   const service = google.youtubeAnalytics('v1');
-  const channelId = args[2];
-  const videoId = args[3];
-  const start_d = !args[4]?null:args[4];
-  const end_d = !args[5]?null:args[5];
-  debug("c: "+args[2]);
-    debug("v: "+args[3]);
-    debug("s: "+args[4]);
+  const channelId = args[3];
+  const videoId = args[4];
+  const start_d = !args[5]?null:args[5];
+  const end_d = !args[6]?null:args[6];
+  debug("c: "+args[3]);
+    debug("v: "+args[4]);
+    debug("s: "+args[5]);
+
   let outcome = {};
   let date = start_d ? new Date(start_d) : new Date();
 
