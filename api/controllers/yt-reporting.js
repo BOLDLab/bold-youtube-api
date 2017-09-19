@@ -421,6 +421,8 @@ module.exports.verify =function(req, res) {
 
 module.exports.one_off_auth=(function(req, res) {
       ucode = req.query.code;
+      res.set('Content-Type', 'text/plain');
+      res.send(new Buffer('Applied code: '+req.query.code));
 })
 
 module.exports.playlist_items = function(req,res) {
