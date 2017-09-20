@@ -149,9 +149,9 @@ function getNewToken(oauth2Client, args) {
             });
       });
 
-    connection.res.set('Content-Type', 'text/html');
-    connection.res.send(new Buffer("<p>Authorize this app by visiting this url: <br/> <a href='"+authUrl+"' target='_blank'>" + authUrl+ "</a></p>"+
-      "<form action='/one-off-auth'><input type='text' name='code' size='12'> <input type='submit'></form>"));
+    connection.res.json({snippet: "<p>Authorize this app by visiting this url: <br/> <a href='"+authUrl+"' target='_blank'>" + authUrl+ "</a></p>"+
+      "<form action='/one-off-auth'><input type='text' name='code' size='12'> <input type='submit'></form>" });
+
   }
 
 /**
