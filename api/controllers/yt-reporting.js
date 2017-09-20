@@ -97,17 +97,25 @@ function authorize(credentials, callback) {
         const auth = new googleAuth();
         const oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
         const args = arguments[2];
-        //  console.log(TOKEN_PATH);
-        fs.readFile(TOKEN_PATH, function(err, token) {
+
+        if( ! process.env.GOOGLE_TOKEN) {
+              getNewToken(oauth2Client, callback);
+        } else {
+              oauth2Client.credentials = JSON.parse(process.env.GOOGLE_TOKEN);
+              callback(oauth2Client, args);
+        }
+
+      /*  fs.readFile(TOKEN_PATH, function(err, token) {
 
          if (err) {
+
               getNewToken(oauth2Client, callback);
          } else {
            //console.log(token);
               oauth2Client.credentials = JSON.parse(token);
               callback(oauth2Client, args);
          }
-       });
+       });*/
 }
 
 /**
@@ -168,6 +176,8 @@ function storeToken(token) {
     }
   }
   fs.writeFile(TOKEN_PATH, JSON.stringify(token));
+
+  process.env.GOOGLE_TOKEN = JSON.stringify(token);
 }
 
 /**
