@@ -101,7 +101,7 @@ function authorize(credentials, callback) {
         if( ! process.env.GOOGLE_TOKEN) {
               getNewToken(oauth2Client, callback);
         } else {
-              oauth2Client.credentials = JSON.parse(process.env.GOOGLE_TOKEN);
+              oauth2Client.credentials = process.env.GOOGLE_TOKEN;
               callback(oauth2Client, args);
         }
 
@@ -151,7 +151,7 @@ function getNewToken(oauth2Client, args) {
                 debug('Error while trying to retrieve access token', err);
                 return;
               }
-              oauth2Client.credentials = token;
+              oauth2Client.credentials = JSON.parse(token);
               storeToken(token);
                 //callback(oauth2Client, args);
             });
