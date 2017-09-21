@@ -112,7 +112,7 @@ function authorize(credentials, callback) {
                   oauth2Client.credentials = JSON.parse(reply);
                   callback(oauth2Client, args);
               } else {
-                  getNewToken(oauth2Client, callback);  
+                  getNewToken(oauth2Client, callback);
               }
         });
 }
@@ -151,7 +151,6 @@ function getNewToken(oauth2Client, args) {
                 return;
               }
               oauth2Client.credentials = JSON.parse(token);
-              ucode = code;
               storeToken(token);
             });
       });
