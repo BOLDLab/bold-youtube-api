@@ -5,6 +5,12 @@ const googleAuth = require('google-auth-library');
 const debug =require('debug')('google_apis');
 const account = require('google-auth2-service-account');
 const config = require('../../config');
+
+const client = require('redis').createClient(process.env.REDIS_URL);
+const Redis = require('ioredis');
+
+const redis = new Redis(process.env.REDIS_URL);
+
 let ucode = "empty";
 
 Date.prototype.yt_friendly = function() {
