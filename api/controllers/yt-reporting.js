@@ -108,10 +108,13 @@ function authorize(credentials, callback) {
         const oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
         const args = arguments[2];
         client.get('google_token', function(err, reply) {
+              if(err) {
+                  debug(err);
+              }
               if(reply) {
-                  debug(reply);
-                  oauth2Client.credentials = reply;
-                  callback(auth, args);
+                  //debug(reply);
+                  oauth2Client.credentials = JSON.parse(reply);
+                  callback(oauth2Client, args);
               } else {
                   getNewToken(oauth2Client, callback);
               }
