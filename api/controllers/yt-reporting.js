@@ -150,7 +150,7 @@ function getNewToken(oauth2Client, args) {
                 debug('Error while trying to retrieve access token', err);
                 return;
               }
-              oauth2Client.credentials = JSON.parse(token);
+              oauth2Client.credentials = token;
               storeToken(token);
             });
       });
