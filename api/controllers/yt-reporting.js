@@ -155,7 +155,7 @@ function getNewToken(oauth2Client, args) {
             });
       });
 
-    connection.res.json({authUrl: authUrl, action: one_off_auth});
+    connection.res.json({authUrl: authUrl, action: "/one-off-auth"});
   }
 
 /**
