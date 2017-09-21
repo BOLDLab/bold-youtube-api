@@ -155,9 +155,7 @@ function getNewToken(oauth2Client, args) {
             });
       });
 
-    connection.res.json({snippet: "<p>Authorize this app by visiting this url: <br/> <a href='"+authUrl+"' target='_blank'>" + authUrl+ "</a></p>"+
-      "<form action='/one-off-auth'><input type='text' name='code' size='12'> <input type='submit'></form>" });
-
+    connection.res.json({authUrl: authUrl, action: one_off_auth});
   }
 
 /**
