@@ -107,25 +107,15 @@ function authorize(credentials, callback) {
         const auth = new googleAuth();
         const oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
         const args = arguments[2];
-
-        if( ! process.env.GOOGLE_TOKEN) {
-              getNewToken(oauth2Client, callback);
-        } else {
-              oauth2Client.credentials = JSON.parse(process.env.GOOGLE_TOKEN);
-              callback(oauth2Client, args);
-        }
-
-      /*  fs.readFile(TOKEN_PATH, function(err, token) {
-
-         if (err) {
-
-              getNewToken(oauth2Client, callback);
-         } else {
-           //console.log(token);
-              oauth2Client.credentials = JSON.parse(token);
-              callback(oauth2Client, args);
-         }
-       });*/
+        const google_token = client.get('google_token', function(err, reply) {
+              if(reply) {
+                    getNewToken(oauth2Client, callback);
+              } else {
+                    debug(reply);
+                    oauth2Client.credentials = JSON.parse(reply);
+                    callback(oauth2Client, args);
+              }
+        });
 }
 
 /**
@@ -138,10 +128,10 @@ function authorize(credentials, callback) {
  */
 
 function setIdentityCode(callback) {
-    console.log("waiting for input");
+  //  console.log("waiting for input");
     const google_code_check = setInterval(function() {
         if(ucode !== "empty") {
-            console.log("Setting: "+ucode);
+          //  console.log("Setting: "+ucode);
             callback(ucode);
             clearInterval(google_code_check);
         }
@@ -149,8 +139,8 @@ function setIdentityCode(callback) {
 }
 
 function getNewToken(oauth2Client, args) {
-  //let args = arguments[2];
-  var authUrl = oauth2Client.generateAuthUrl({
+
+  const authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: SCOPES
   });
@@ -163,7 +153,6 @@ function getNewToken(oauth2Client, args) {
               }
               oauth2Client.credentials = JSON.parse(token);
               storeToken(token);
-                //callback(oauth2Client, args);
             });
       });
 
@@ -178,16 +167,7 @@ function getNewToken(oauth2Client, args) {
  * @param {Object} token The token to store to disk.
  */
 function storeToken(token) {
-  try {
-    fs.mkdirSync(TOKEN_DIR);
-  } catch (err) {
-    if (err.code != 'EEXIST') {
-      throw err;
-    }
-  }
-  fs.writeFile(TOKEN_PATH, JSON.stringify(token));
-
-  process.env.GOOGLE_TOKEN = JSON.stringify(token);
+    client.set('google_token', JSON.stringify(token));
 }
 
 /**
