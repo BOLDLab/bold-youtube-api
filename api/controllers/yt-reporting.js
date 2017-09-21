@@ -6,13 +6,13 @@ const debug =require('debug')('google_apis');
 const account = require('google-auth2-service-account');
 const config = require('../../config');
 
-const client = require('redis').createClient(process.env.REDIS_URL);
+const client = require('redis').createClient(process.env.REDISTOGO_URL);
 const Redis = require('ioredis');
 
-const redis = new Redis(process.env.REDIS_URL);
+const redis = new Redis(process.env.REDISTOGO_URL);
 
 client.on('connect', function() {
-    console.log('Redis connected on: '+process.env.REDIS_URL);
+    console.log('Redis connected on: '+process.env.REDISTOGO_URL);
 });
 
 let ucode = "empty";
