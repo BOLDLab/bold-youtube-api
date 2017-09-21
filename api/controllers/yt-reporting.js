@@ -152,6 +152,7 @@ function getNewToken(oauth2Client, args) {
                 return;
               }
               oauth2Client.credentials = JSON.parse(token);
+              ucode = code;
               storeToken(token);
             });
       });
