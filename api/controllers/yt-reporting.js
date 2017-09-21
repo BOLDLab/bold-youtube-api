@@ -107,7 +107,7 @@ function authorize(credentials, callback) {
         const auth = new googleAuth();
         const oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
         const args = arguments[2];
-        const google_token = client.get('google_token', function(err, reply) {
+        client.get('google_token', function(err, reply) {
               if(reply) {
                     getNewToken(oauth2Client, callback);
               } else {
@@ -168,7 +168,11 @@ function getNewToken(oauth2Client, args) {
  * @param {Object} token The token to store to disk.
  */
 function storeToken(token) {
-    client.set('google_token', JSON.stringify(token));
+    client.set('google_token', JSON.stringify(token), function(err,reply)
+      {
+          console.log("Set token:");
+          console.log(reply);
+      });
 }
 
 /**
