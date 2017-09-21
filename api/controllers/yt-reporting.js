@@ -11,6 +11,10 @@ const Redis = require('ioredis');
 
 const redis = new Redis(process.env.REDIS_URL);
 
+client.on('connect', function() {
+    console.log('Redis connected on: '+process.env.REDIS_URL);
+});
+
 let ucode = "empty";
 
 Date.prototype.yt_friendly = function() {
