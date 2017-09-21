@@ -109,11 +109,10 @@ function authorize(credentials, callback) {
         const args = arguments[2];
         client.get('google_token', function(err, reply) {
               if(reply) {
-                    getNewToken(oauth2Client, callback);
+                  oauth2Client.credentials = JSON.parse(reply);
+                  callback(oauth2Client, args);
               } else {
-                    debug(reply);
-                    oauth2Client.credentials = JSON.parse(reply);
-                    callback(oauth2Client, args);
+                  getNewToken(oauth2Client, callback);  
               }
         });
 }
