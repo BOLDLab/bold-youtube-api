@@ -170,8 +170,8 @@ function getNewToken(oauth2Client, args) {
 function storeToken(token) {
     client.set('google_token', JSON.stringify(token), function(err,reply)
       {
-          console.log("Set token:");
-          console.log(reply);
+          debug("Set token:");
+          debug(reply);
       });
 }
 
