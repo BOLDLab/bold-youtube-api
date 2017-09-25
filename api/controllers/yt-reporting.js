@@ -40,23 +40,15 @@ const TOKEN_PATH = TOKEN_DIR + 'youtube-nodejs-quickstart.json';
 let connection = {};
 
 function loadAuth(fn, req, res) {
-if(!res.headersSent) {
-      const origin = req.get('origin');
-        if(config.origins.indexOf(origin) > -1) {
-            res.header("Access-Control-Allow-Origin", origin);
-        }
-}
+    if(!res.headersSent) {
+          const origin = req.get('origin');
+            if(config.origins.indexOf(origin) > -1) {
+                res.header("Access-Control-Allow-Origin", origin);
+            }
+    }
 
-const args = arguments;
+    const args = arguments;
 
-//let service_account;
-//if(service_pem) {
-  /*      service_account =
-
-        account.auth( service_pem, {
-            iss : 'bold-111@uon-bold-video-analytics.iam.gserviceaccount.com',
-            scope : 'https://www.googleapis.com/auth/yt-analytics.readonly'
-        }, function ( err, accessToken ) {*/
           if(! process.env.GOOGLE_CREDENTIALS) {
                 fs.readFile('client_secret.json', function processClientSecrets(err, content) {
                   if (err) {
@@ -81,17 +73,6 @@ const args = arguments;
                       return;
                   }
           }
-            //authorize(accessToken, fn, args);
-    //    });
-    //  });
-/*} else {
-   debug("Service Account not authorised");
-}*/
-
-
-
-/*
-*/
 }
 
 /**
@@ -206,9 +187,7 @@ function getChannel(auth, args) {
                   channels[0].statistics.viewCount);
 
         outcome = channels[0].contentDetails.relatedPlaylists.uploads;
-      //  debug("RAW: "+JSON.stringify(channels));
-      //  debug("OUTCOME: "+JSON.stringify(outcome));
-      //  debug("Calling "+args[3]);
+
         switch(args[3]) {
           case 'playlistItems':
             getPlaylistItems(auth, outcome);
@@ -222,31 +201,21 @@ function getChannel(auth, args) {
 
 function getChannels(auth) {
   const service = google.youtube('v3');
-
-  //debug(service);
   let outcome = {};
 
-//  debug(service.youtubereporting);
   service.channels.list({
     auth: auth,
     part: 'snippet,contentDetails,statistics',
     forUsername: 'theboldlab'
   }, function(err, response) {
     if (err) {
-      debug('The API returned an error: ' + err);
+        debug('The API returned an error: ' + err);
       return;
     }
     var channels = response.items;
     if (channels.length == 0) {
-      debug('No channel found.');
+        debug('No channel found.');
     } else {
-      /*debug('This channel\'s ID is %s. Its title is \'%s\', and ' +
-                  'it has %s views.',
-                  channels[0].id,
-                  channels[0].snippet.title,
-                  channels[0].statistics.viewCount);*/
-
-      //connection.res.json(response.items);
         outcome = response.items;
     }
   });
@@ -260,10 +229,8 @@ function getPlaylistId(auth) {
 
 function getPlaylistItems(auth, playlistId) {
   const service = google.youtube('v3');
-//  const playlistId = getPlaylistId(auth);
-//  debug("GOT ID: "+playlistId);
   let outcome = {};
-//  debug(service.youtubereporting);
+
   service.playlistItems.list({
     auth: auth,
     part: 'snippet, contentDetails',
@@ -279,7 +246,6 @@ function getPlaylistItems(auth, playlistId) {
       debug('No playlists found.');
     } else {
 
-      //connection.res.json(response.items);
       connection.res.json(response);
     }
   });
@@ -288,10 +254,8 @@ function getPlaylistItems(auth, playlistId) {
 function getVideoDetails(auth, args) {
   const service = google.youtube('v3');
   const id = args[3];
-//  const playlistId = getPlaylistId(auth);
-//  debug("GOT ID: "+playlistId);
   let outcome = {};
-//  debug(service.youtubereporting);
+
   service.videos.list({
     auth: auth,
     part: 'snippet',
@@ -307,7 +271,6 @@ function getVideoDetails(auth, args) {
       debug('No video found.');
     } else {
 
-      //connection.res.json(response.items);
       connection.res.json(response);
     }
   });
@@ -358,7 +321,6 @@ function getVideoAnalytics(auth, args) {
       debug('No analytics found.');
     } else {
 
-      //connection.res.json(response.items);
       connection.res.json(response);
     }
   });
@@ -398,9 +360,6 @@ function getReportTypes(auth) {
 //  debug(service.youtubereporting);
   reports.reportTypes.list({
     auth: auth,
-  //  onBehalfOfContentOwner: "theboldlab"
-    /*part: 'snippet,contentDetails,statistics',
-    forUsername: 'theboldlab'*/
   }, function(err, response) {
     if (err) {
       debug('The API returned an error: ' + err);
