@@ -14,7 +14,10 @@ const config = {
           }
 
           return JSON.parse(process.env.GOOGLE_CREDENTIALS);
-      }
+      },
+      origins: ["https://uonline.newcastle.edu.au",
+                                "https://bold.newcastle.edu.au",
+                                  "https://bold-space.newcastle.edu.au"]
 };
 
 module.exports = config;

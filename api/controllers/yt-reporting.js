@@ -12,7 +12,7 @@ const Redis = require('ioredis');
 const redis = new Redis(process.env.REDISTOGO_URL);
 
 client.on('connect', function() {
-    console.log('Redis connected on: '+process.env.REDISTOGO_URL);
+    debug('Redis connected on: '+process.env.REDISTOGO_URL);
 });
 
 let ucode = "empty";
@@ -28,22 +28,24 @@ Date.prototype.yt_friendly = function() {
 };
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/youtube-nodejs-quickstart.json
-var SCOPES = ['https://www.googleapis.com/auth/youtube',
+const SCOPES = ['https://www.googleapis.com/auth/youtube',
 'https://www.googleapis.com/auth/yt-analytics.readonly',
 'https://www.googleapis.com/auth/yt-analytics-monetary.readonly',
 'https://www.googleapis.com/auth/youtubepartner'];
-var TOKEN_DIR = config.tokenDir();
-var TOKEN_PATH = TOKEN_DIR + 'youtube-nodejs-quickstart.json';
+const TOKEN_DIR = config.tokenDir();
+const TOKEN_PATH = TOKEN_DIR + 'youtube-nodejs-quickstart.json';
+
 
 // Load client secrets from a local file.
 let connection = {};
 
 function loadAuth(fn, req, res) {
 if(!res.headersSent) {
-      res.header("Access-Control-Allow-Origin", "*");
+      const origin = req.get('origin');
+        if(config.origins.indexOf(origin) > -1) {
+            res.header("Access-Control-Allow-Origin", origin);
+        }
 }
-
-//let service_pem = process.env.GOOGLE_SERVICE_PEM ? new Buffer(process.env.GOOGLE_SERVICE_PEM) : fs.readFileSync('google_service.pem');
 
 const args = arguments;
 
